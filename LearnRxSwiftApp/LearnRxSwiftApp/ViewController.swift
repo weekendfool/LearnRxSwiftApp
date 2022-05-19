@@ -14,7 +14,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        createSample()
+//        createSample()
+        
+        firstSample()
     }
 
     // MARK: - 関数
@@ -42,6 +44,21 @@ class ViewController: UIViewController {
         }.disposed(by: disposebag)
 
     }
+    
+    func firstSample() {
+        let praice = [0, 100, 200, 300]
+        
+        let taxRate = 1.10
+        
+        Observable.from(praice).map { praice in
+            // タスクを流す
+            Int(Double(praice) * taxRate)
+//            print("on Next: \(praice)")
+        }.subscribe { event in
+            print(event)
+        }.dispose()
+    }
+    
     
 
 }
