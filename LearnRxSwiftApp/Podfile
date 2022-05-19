@@ -14,8 +14,8 @@ target 'LearnRxSwiftApp' do
 
   target 'LearnRxSwiftAppUITests' do
     # Pods for testing
-pod 'RxSwift'
-pod 'RxCocoa'
   end
 
+pod 'RxSwift'
+pod 'RxCocoa'
 end
