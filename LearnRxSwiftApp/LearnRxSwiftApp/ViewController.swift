@@ -18,36 +18,15 @@ class ViewController: UIViewController {
         
 //        firstSample()
         
-        secondSample()
+//        secondSample()
+        
+        deferredSample()
     }
 
     // MARK: - 関数
-    func createSample() {
-        // 購読の破棄のコントロール
-        let disposebag = DisposeBag()
-        
-        // マニュアルの作成
-        let observable = Observable<String>.create { observer in
-            observer.onNext("か")
-            observer.onNext("き")
-            observer.onNext("く")
-            observer.onCompleted()
-            
-            return Disposables.create {
-                print("Observer dispose")
-            }
-        }
-        
-        // observerの購読
-        observable.subscribe { element in
-            print("Observer: \(element)")
-        } onDisposed: {
-            print("Observer Disposed")
-        }.disposed(by: disposebag)
-
-    }
-    
+   
     func firstSample() {
+        // コールド　仕事していない、上司に質問されて即座に仕事して返事をするイメージ
         let praice = [0, 100, 200, 300]
         
         let taxRate = 1.10
@@ -62,8 +41,12 @@ class ViewController: UIViewController {
     }
     
     func secondSample() {
+        
+        // ホット　仕事自体はしている、日報を上げたら上司が購読するイメージ
         // 購読の監視？
+        // disposeBagがsecondSample()内で宣言されているから、secondSample()が終了したときに.disposed(by: disposeBag)処理が走る
         let disposeBag = DisposeBag()
+        
         // subjectの生成
 //        let subject = PublishSubject<String>()
        let subject = BehaviorSubject<String>(value: "黒")
@@ -124,6 +107,60 @@ class ViewController: UIViewController {
         // 購読者の設定より後に実装したイベントのみ発火する
         
         // イベントが発火する->それまでに登録されていた購読者に通知　のイメージ
+
+    }
+    
+    func createSample() {
+        // 購読の破棄のコントロール
+        let disposebag = DisposeBag()
+        
+        // マニュアルの作成
+        let observable = Observable<String>.create { observer in
+            observer.onNext("か")
+            observer.onNext("き")
+            observer.onNext("く")
+            observer.onCompleted()
+            
+            return Disposables.create {
+                print("Observer dispose")
+            }
+        }
+        
+        // observerの購読者登録
+        observable.subscribe { element in
+            print("Observer: \(element)")
+        } onDisposed: {
+            print("Observer Disposed")
+        }.disposed(by: disposebag)
+
+    }
+    
+    func deferredSample() {
+        // 購読の破棄のコントロール
+        let disposebag = DisposeBag()
+        var count = 0
+        
+        //
+        let observable = Observable<Date>.deferred {
+            count += 1
+            print("create observale: \(count)")
+            
+            return Observable<Date>.just(Date())
+        }
+        
+        // 購読者１
+        observable.subscribe { element in
+            print("observer1 : \(element)")
+        }.disposed(by: disposebag)
+        
+        // 二秒間待機
+        Thread.sleep(until: Date(timeIntervalSinceNow: 2))
+        
+        // 購読者２
+        observable.subscribe { element in
+            print("observer2 : \(element)")
+        
+        }.disposed(by: disposebag)
 
     }
     
