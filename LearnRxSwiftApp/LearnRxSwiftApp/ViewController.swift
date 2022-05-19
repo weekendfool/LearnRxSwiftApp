@@ -20,7 +20,9 @@ class ViewController: UIViewController {
         
 //        secondSample()
         
-        deferredSample()
+//    deferredSample()
+        
+        fratMapSample()
     }
 
     // MARK: - 関数
@@ -159,6 +161,26 @@ class ViewController: UIViewController {
         // 購読者２
         observable.subscribe { element in
             print("observer2 : \(element)")
+        
+        }.disposed(by: disposebag)
+
+    }
+    
+    func fratMapSample() {
+        // 購読の破棄のコントロール
+        let disposebag = DisposeBag()
+        
+        Observable<String>.of("左", "右").flatMap { element in
+            // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+            // 新しいObservableに変換
+            Observable<String>.of("L", "R").map { value in
+                "element：　\(element), value：　\(value)"
+            }
+            // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+            
+        }.subscribe { element in
+            // 購読開始
+            print("element2: \(element)")
         
         }.disposed(by: disposebag)
 
