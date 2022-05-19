@@ -16,7 +16,9 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
 //        createSample()
         
-        firstSample()
+//        firstSample()
+        
+        secondSample()
     }
 
     // MARK: - 関数
@@ -57,6 +59,72 @@ class ViewController: UIViewController {
         }.subscribe { event in
             print(event)
         }.dispose()
+    }
+    
+    func secondSample() {
+        // 購読の監視？
+        let disposeBag = DisposeBag()
+        // subjectの生成
+//        let subject = PublishSubject<String>()
+       let subject = BehaviorSubject<String>(value: "黒")
+        
+        // subjectにひとつ目の要素を発行
+        subject.onNext("赤")
+        
+        // 購読者１
+        subject.subscribe { element in
+            print("observer: 1 - Event \(element)")
+        } onCompleted: {
+            print("observer: 1 - Event fin")
+        } onDisposed: {
+            print("observer: 1 - Event 購読破棄")
+        }.disposed(by: disposeBag)
+        
+        
+        // subjectにふたつ目の要素を発行
+        subject.onNext("青")
+        // subjectに三つ目の要素を発行
+        subject.onNext("黄")
+        
+        // 購読者2
+        subject.subscribe { element in
+            print("observer: 2 - Event \(element)")
+        } onCompleted: {
+            print("observer: 2 - Event fin")
+        } onDisposed: {
+            print("observer: 2 - Event 購読破棄")
+        }.disposed(by: disposeBag)
+        
+        // subjectに四つ目の要素を発行
+        subject.onNext("緑")
+        
+        // 購読者３
+        subject.subscribe { element in
+            print("observer: 3 - Event \(element)")
+        } onCompleted: {
+            print("observer: 3 - Event fin")
+        } onDisposed: {
+            print("observer: 3 - Event 購読破棄")
+        }.disposed(by: disposeBag)
+        
+        // subjectに四つ目の要素を発行
+        subject.onNext("紫")
+        
+        // 購読者4
+        subject.subscribe { element in
+            print("observer: 4 - Event \(element)")
+        } onCompleted: {
+            print("observer: 4 - Event fin")
+        } onDisposed: {
+            print("observer: 4 - Event 購読破棄")
+        }.disposed(by: disposeBag)
+        
+        subject.onCompleted()
+        
+        // 購読者の設定より後に実装したイベントのみ発火する
+        
+        // イベントが発火する->それまでに登録されていた購読者に通知　のイメージ
+
     }
     
     
