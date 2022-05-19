@@ -22,7 +22,9 @@ class ViewController: UIViewController {
         
 //    deferredSample()
         
-        fratMapSample()
+//        fratMapSample()
+        
+        margeSample()
     }
 
     // MARK: - 関数
@@ -173,9 +175,11 @@ class ViewController: UIViewController {
         Observable<String>.of("左", "右").flatMap { element in
             // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
             // 新しいObservableに変換
+            // 新しいObservableに対してsubscribe,disposedが不要なイメージ
             Observable<String>.of("L", "R").map { value in
                 "element：　\(element), value：　\(value)"
             }
+            
             // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
             
         }.subscribe { element in
@@ -186,6 +190,30 @@ class ViewController: UIViewController {
 
     }
     
+    func margeSample() {
+        // 購読の破棄のコントロール
+        let disposebag = DisposeBag()
+        
+        // subject作成
+        let subject1 = PublishSubject<String>()
+        let subject2 = PublishSubject<String>()
+        
+        // observable作成
+        // .merge([subject1, subject2])で登録しておけばどちらのイベントも購読できる
+        let observable = Observable<String>.merge([subject1, subject2])
+        
+        // 購読
+        observable.subscribe { event in
+            print("observer: \(event)")
+        
+        }.disposed(by: disposebag)
+        
+        // 発行
+        subject1.onNext("ai")
+        subject2.onNext("ue")
+
+        
+    }
     
 
 }
